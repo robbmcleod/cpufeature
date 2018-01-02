@@ -1,0 +1,11 @@
+*.o
+*.a
+*.pyc
+build/
+dist/
+*.egg-info
+.vscode/
+*.pdf
+*.pyd
+*.so
+
