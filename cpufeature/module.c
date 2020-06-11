@@ -6,7 +6,7 @@
 
 #include <Python.h>
 
-#include "cpu_x86.h"
+#include "cpu_x86.c"
 
 
 
