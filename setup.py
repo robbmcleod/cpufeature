@@ -36,7 +36,8 @@ LFLAGS = os.environ.get('LFLAGS', '').split()
 
 # Sources and headers
 sources = [  
-    'cpufeature/cpu_x86.c', 'cpufeature/module.c'
+    # 'cpufeature/cpu_x86.c', 'cpufeature/module.c'
+    'cpufeature/module.c'
 ]
 inc_dirs = ['cpufeature',]
 lib_dirs = []
