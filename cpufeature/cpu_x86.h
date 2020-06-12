@@ -76,30 +76,6 @@ struct cpu_x86{
     bool HW_AVX512_VBMI;
 };
 
-// Global 
-// We could pass this struct around as an argument, but since you can't have 
-// two on a machine, it's a natural singleton
-struct cpu_x86 *this_x86;
-
-
-void init_cpu_x86(void);
-void free_cpu_x86(void);
-void detect_host(void);
-
-void get_vendor_string(void);
-void detect_cores(void);
-void detect_cache(void);
-
-// Docs on cpuid can be found in the Intel(R) 64 and IA-32 Architectures 
-// Software Developer Manuals:
-// https://software.intel.com/en-us/articles/intel-sdm
-//
-// Presently in Vol 2A on pp. 3-190 to 3-205
-void cpuid(int32_t out[4], int32_t level, int32_t count);
-
-bool detect_OS_x64(void);
-bool detect_OS_AVX(void);
-bool detect_OS_AVX512(void);
 
 
 
