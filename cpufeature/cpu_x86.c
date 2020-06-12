@@ -21,9 +21,9 @@
 #   error "No cpuid intrinsic defined for processor architecture."
 #endif
 
+extern struct cpu_x86 *this_x86;
 
 void init_cpu_x86(void) {
-    struct cpu_x86 *this_x86;
     this_x86 = (struct cpu_x86 *)calloc(1, sizeof(struct cpu_x86));
 }
 

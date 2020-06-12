@@ -31,6 +31,8 @@ static struct PyModuleDef module_def = {
     NULL
 };
 
+extern struct cpu_x86 *this_x86;
+
 PyMODINIT_FUNC
 PyInit_extension(void)
 {

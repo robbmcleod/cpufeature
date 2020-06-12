@@ -79,7 +79,7 @@ struct cpu_x86{
 // Global 
 // We could pass this struct around as an argument, but since you can't have 
 // two on a machine, it's a natural singleton
-extern struct cpu_x86 *this_x86;
+struct cpu_x86 *this_x86;
 
 
 void init_cpu_x86(void);
