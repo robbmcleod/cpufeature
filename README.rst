@@ -95,6 +95,10 @@ Authors
 Release Notes
 -------------
 
+**0.1.1**
+
+* Fixes for compilation with `clang`.
+
 **0.1.0**
 
 * Added detection of processors, cores, and cache sizes
