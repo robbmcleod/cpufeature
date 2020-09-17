@@ -43,7 +43,7 @@ lib_dirs = []
 libs = []
 def_macros = []
 
-with open('README.rst') as fh:
+with open('README.md') as fh:
     long_desc = fh.read()
 
 
@@ -68,6 +68,7 @@ setup(name = "cpufeature",
       version = VERSION,
       description = 'Python CPU Feature Detection',
       long_description = long_desc,
+      long_description_content_type="text/markdown",
       classifiers = [c for c in classifiers.split("\n") if c],
       author = 'Robert A. McLeod',
       author_email = 'robbmcleod@gmail.com',
