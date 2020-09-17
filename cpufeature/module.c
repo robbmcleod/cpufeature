@@ -31,6 +31,7 @@ static struct PyModuleDef module_def = {
     NULL
 };
 
+
 PyMODINIT_FUNC
 PyInit_extension(void)
 {
@@ -43,7 +44,7 @@ PyInit_extension(void)
         return NULL;
     }
 
-    
+    extern struct cpu_x86 *this_x86;
     init_cpu_x86();
     // Interrogate the machine with light slaps.
     detect_host();
