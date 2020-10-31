@@ -8,6 +8,8 @@
 
 //  Dependencies
 #include "cpu_x86.h"
+#include <pthread.h>
+#include <sys/sysinfo.h>
 
 #if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
 #   if _WIN32
@@ -75,23 +77,102 @@ void get_vendor_string(void) {
 // input:  eax = functionnumber, ecx = 0
 // output: eax = output[0], ebx = output[1], ecx = output[2], edx = output[3]
 
+unsigned hardware_concurrency()
+{
+    #if defined(PTW32_VERSION) || defined(__hpux)
+        return pthread_num_processors_np();
+    #elif defined(__APPLE__) || defined(__FreeBSD__)
+        int count;
+        size_t size=sizeof(count);
+        return sysctlbyname("hw.ncpu",&count,&size,NULL,0)?0:count;
+    #elif defined(BOOST_HAS_UNISTD_H) && defined(_SC_NPROCESSORS_ONLN)
+        int const count=sysconf(_SC_NPROCESSORS_ONLN);
+        return (count>0)?count:0;
+    #elif defined(_GNU_SOURCE)
+        return get_nprocs();
+    #else
+        return 0;
+    #endif
+}
+
 void detect_cores(void) {
-    int info0[4], info1[4];
+    int info0[4], info1[4], info2[4];
+    int vendor = 0; // CPU vendor: 1 = Intel, 2 = AMD, 0 = Other (not supported for now)
+    int logicalProc = 1;
+    int physicalProc = 1;
+    int procPerCore = 1;
+    bool hyperthreadingSupported = false;
+    int systemProcessors = hardware_concurrency(); 
 
-    // Core topology (0x0B)
-    // So the first level (eax=0x0B, ecx=0x00) is hyperthreading/processors, and 
-    // the next level (eax=0x0B, ecx=0x01) is cores
-    cpuid(info0, 0x0B, 0x00);
-    cpuid(info1, 0x0B, 0x01);
-    // printf( "x0B,0x00: Processors: %d, %d, %d, %d\n", info[0], info[1], info[2], info[3]);
-    // printf( "x0B,0x01: Cores:      %d, %d, %d, %d\n", info1[0], info1[1], info1[2], info1[3]);
+    cpuid(info0, 0, 0);
+    int maxLeaf = info0[0];
+    if (info0[2] == 0x6C65746E) {   // last 4 chars of "GenuineIntel"
+        vendor = 1;
+    }
+    else if (info0[2] == 0x444D4163) { // last 4 chars of "AuthenticAMD"
+        vendor = 2;
+    }
 
-    // I'm not sure if it's possible to count physical processors in this way 
-    // for 2,4 CPU machines, as there it's usually better to have one process
-    // per physical CPU in my experience...
-    this_x86->num_threads_per_core = info0[1] & 0xFFFF;
-    this_x86->num_virtual_cores = info1[1] & 0xFFFF;
-    this_x86->num_physical_cores = this_x86->num_virtual_cores / this_x86->num_threads_per_core;
+    if (maxLeaf >= 1) {
+        cpuid(info0, 1, 0);
+        if (info0[3] & (1 << 28)) {
+            hyperthreadingSupported = true;
+        }
+    }
+
+    if (vendor == 1) {
+        // Core topology (0x0B)
+        // So the first level (eax=0x0B, ecx=0x00) is hyperthreading/processors, and 
+        // the next level (eax=0x0B, ecx=0x01) is cores
+        cpuid(info1, 0x0B, 0x00);
+        cpuid(info2, 0x0B, 0x01);
+        // printf( "x0B,0x00: Processors: %d, %d, %d, %d\n", info0[0], info0[1], info0[2], info0[3]);
+        // printf( "x0B,0x01: Cores:      %d, %d, %d, %d\n", info1[0], info1[1], info1[2], info1[3]);
+
+        // I'm not sure if it's possible to count physical processors in this way 
+        // for 2,4 CPU machines, as there it's usually better to have one process
+        // per physical CPU in my experience...
+        this_x86->num_threads_per_core = info1[1] & 0xFFFF;
+        this_x86->num_virtual_cores = info2[1] & 0xFFFF;
+        this_x86->num_physical_cores = this_x86->num_virtual_cores / this_x86->num_threads_per_core;
+    }
+    else if (vendor == 2) {
+        cpuid(info1, 0x80000000, 0);
+        int maxLeaf8 = info1[0] & 0xFFFF;
+        if (maxLeaf8 >= 8) {
+            cpuid(info1, 0x80000008, 0);
+            logicalProc = (info1[2] & 0xFF) + 1;
+
+            if (maxLeaf8 >= 0x1E) {
+                cpuid(info1, 0x8000001E, 0);
+                procPerCore = ((info1[1] >> 8) & 0x03) + 1;
+                // procPerCore = 2 if simultaneous multithreading is enabled, 1 if disabled
+            }
+            else {
+                if (hyperthreadingSupported) {
+                    procPerCore = 2;
+                }
+                else {
+                    procPerCore = 1;
+                }
+            }
+            physicalProc = logicalProc / procPerCore;
+        }
+        else if (hyperthreadingSupported) {
+            // number of logical processors per core is not known. Assume 2 if SMT supported
+            logicalProc = 2;
+            physicalProc = 1;
+        }
+        if (systemProcessors > logicalProc) {
+            // Multiple CPU chips. Assume that chips are identical with respect to SMT
+            physicalProc = systemProcessors * physicalProc / logicalProc;
+            logicalProc = systemProcessors;
+        }
+
+        this_x86->num_threads_per_core = procPerCore;
+        this_x86->num_virtual_cores = logicalProc;
+        this_x86->num_physical_cores = physicalProc;
+    }
 }
 
 void detect_cache(void) {
