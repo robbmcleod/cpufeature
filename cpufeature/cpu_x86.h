@@ -16,14 +16,22 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+
+
 struct cpu_x86{
     //  Vendor
     char* VendorID;
+    enum {
+        UNSUPPORTED = 0,
+        INTEL       = 1, 
+        AMD         = 2
+    } vendor_enum;
 
     // Core features
     int num_threads_per_core;   // if greater than 1 generally indicates Intel Hyperthreading (R) or other multi-threading architecture
     int num_virtual_cores;
     int num_physical_cores;
+    int num_cpus;
 
     int cache_line_size;  // Bytes
     int cache_L1_size;    // Bytes
@@ -95,6 +103,9 @@ extern void detect_cache(void);
 // https://software.intel.com/en-us/articles/intel-sdm
 //
 // Presently in Vol 2A on pp. 3-190 to 3-205
+// 
+// For AMD:
+// https://www.amd.com/system/files/TechDocs/54945_3.03_ppr_ZP_B2_pub.zip
 extern void cpuid(int32_t out[4], int32_t level, int32_t count);
 
 extern bool detect_OS_x64(void);
