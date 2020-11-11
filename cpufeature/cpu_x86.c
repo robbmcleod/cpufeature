@@ -70,28 +70,94 @@ void get_vendor_string(void) {
     memcpy(this_x86->VendorID + 4, &info[3], 4);
     memcpy(this_x86->VendorID + 8, &info[2], 4);
     // Calloc takes care of the trailing null
+
+    // Get an enum for quick branching later in the code.
+    if (strcmp(this_x86->VendorID, "GenuineIntel") == 0) {
+        this_x86->vendor_enum = INTEL;
+    }
+    else if (strcmp(this_x86->VendorID, "AuthenticAMD") == 0) {
+        this_x86->vendor_enum = AMD;
+    }
+    else {
+        fprintf(stderr, "Warning: unsupported CPU Vendor for `cpufeature`.\n");
+        printf("Unsupported architecture\n");
+        this_x86->vendor_enum = UNSUPPORTED;
+    }
 }
 
 // input:  eax = functionnumber, ecx = 0
 // output: eax = output[0], ebx = output[1], ecx = output[2], edx = output[3]
-
 void detect_cores(void) {
-    int info0[4], info1[4];
+    int info0[4], info1[4], info2[4];
+    int logicalProc = 1;
+    int physicalProc = 1;
+    int procPerCore = 1;
+    bool hyperthreadingSupported = false;
+    int totalSystemProc = 1;
 
-    // Core topology (0x0B)
-    // So the first level (eax=0x0B, ecx=0x00) is hyperthreading/processors, and 
-    // the next level (eax=0x0B, ecx=0x01) is cores
-    cpuid(info0, 0x0B, 0x00);
-    cpuid(info1, 0x0B, 0x01);
-    // printf( "x0B,0x00: Processors: %d, %d, %d, %d\n", info[0], info[1], info[2], info[3]);
-    // printf( "x0B,0x01: Cores:      %d, %d, %d, %d\n", info1[0], info1[1], info1[2], info1[3]);
+    cpuid(info0, 0, 0);
+    int maxLeaf = info0[0];
 
-    // I'm not sure if it's possible to count physical processors in this way 
-    // for 2,4 CPU machines, as there it's usually better to have one process
-    // per physical CPU in my experience...
-    this_x86->num_threads_per_core = info0[1] & 0xFFFF;
-    this_x86->num_virtual_cores = info1[1] & 0xFFFF;
-    this_x86->num_physical_cores = this_x86->num_virtual_cores / this_x86->num_threads_per_core;
+    if (maxLeaf >= 1) {
+        cpuid(info0, 1, 0);
+        if (info0[3] & (1 << 28)) {
+            hyperthreadingSupported = true;
+        }
+    }
+
+    if (this_x86->vendor_enum == INTEL) {
+        // Core topology (0x0B)
+        // So the first level (eax=0x0B, ecx=0x00) is hyperthreading/processors, and 
+        // the next level (eax=0x0B, ecx=0x01) is cores
+        cpuid(info1, 0x0B, 0x00);
+        cpuid(info2, 0x0B, 0x01);
+        // printf( "x0B,0x00: Processors: %d, %d, %d, %d\n", info0[0], info0[1], info0[2], info0[3]);
+        // printf( "x0B,0x01: Cores:      %d, %d, %d, %d\n", info1[0], info1[1], info1[2], info1[3]);
+
+        procPerCore = info1[1] & 0xFFFF;
+        logicalProc = info2[1] & 0xFFFF;
+        physicalProc = logicalProc / procPerCore;
+    }
+    else if (this_x86->vendor_enum == AMD) {
+        cpuid(info1, 0x80000000, 0);
+        int maxLeaf8 = info1[0] & 0xFFFF;
+        if (maxLeaf8 >= 8) {
+            cpuid(info1, 0x80000008, 0);
+            logicalProc = (info1[2] & 0xFF) + 1;
+
+            if (maxLeaf8 >= 0x1E) {
+                cpuid(info1, 0x8000001E, 0);
+                procPerCore = ((info1[1] >> 8) & 0x03) + 1;
+                // procPerCore = 2 if simultaneous multithreading is enabled, 1 if disabled
+            }
+            else {
+                if (hyperthreadingSupported) {
+                    procPerCore = 2;
+                }
+                else {
+                    procPerCore = 1;
+                }
+            }
+            physicalProc = logicalProc / procPerCore;
+        }
+        else if (hyperthreadingSupported) {
+            // number of logical processors per core is not known. Assume 2 if SMT supported
+            logicalProc = 2;
+            physicalProc = 1;
+        }
+    }
+
+    totalSystemProc = hardware_concurrency();
+    this_x86->num_cpus = totalSystemProc  / logicalProc;
+    if (totalSystemProc > logicalProc) {
+        // Multiple CPU chips.
+        physicalProc = totalSystemProc * physicalProc / logicalProc;
+        logicalProc = totalSystemProc;
+    }
+    this_x86->num_threads_per_core = procPerCore;
+    this_x86->num_virtual_cores = logicalProc;
+    this_x86->num_physical_cores = physicalProc;
+    
 }
 
 void detect_cache(void) {
@@ -99,7 +165,6 @@ void detect_cache(void) {
     
     cpuid(info, 0x80000006, 0);
     this_x86->cache_line_size = info[2] & (int)255;
-
     /*  
         0x02: Cache info
         This appears to be a (deprecated) large enumerator that is used for 
@@ -146,7 +211,6 @@ void detect_cache(void) {
             this_x86->cache_L3_size = total_size;
         }
     }
-
 }
 
 
@@ -167,7 +231,6 @@ void detect_host(void) {
 
     cpuid(info, 0x80000000, 0);
     uint32_t nExIds = info[0];
-    
 
     //  Detect Features
     if (nIds >= 0x00000001) {

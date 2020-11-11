@@ -55,3 +55,12 @@ bool detect_OS_x64(void){
     return IsWow64() != 0;
 #endif
 }
+
+// Counts total number of logical cores on a system, for determining if there 
+// multiple CPU chips in a machine.
+// Code modified from: os_cpu_count_impl in https://github.com/python/cpython/blob/3.9/Modules/posixmodule.c
+int hardware_concurrency() {
+    // Requires Windows 7 or greater
+    int ncpu = GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
+    return ncpu;
+}

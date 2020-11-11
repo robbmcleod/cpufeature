@@ -95,6 +95,10 @@ Authors
 Release Notes
 -------------
 
+**0.2.0**
+
+* Added support for AMD processors.
+
 **0.1.1**
 
 * Fixes for compilation with `clang`.
@@ -104,5 +108,3 @@ Release Notes
 * Added detection of processors, cores, and cache sizes
 * Created Python wrapper around FeatureDetector
 * Reduced FeatureDetector to C99 for better cross-platform compatibility
-
-

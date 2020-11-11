@@ -20,8 +20,8 @@ from glob import glob
 
 # cpufeature version
 major_ver = 0
-minor_ver = 1
-nano_ver = 1
+minor_ver = 2
+nano_ver = 0
 
 branch = ''
 

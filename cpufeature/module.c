@@ -8,16 +8,6 @@
 
 #include "cpu_x86.h"
 
-
-
-// static PyMethodDef module_methods[] =
-//     {
-//         //{"EmptySet", (PyCFunction)PyFNS_GetEmptySet, METH_VARARGS, GetEmptySet__doc__},
-//         //{"AlignedSize", (PyCFunction)PyFNS_AlignedSize, METH_VARARGS, AlignedSize__doc__},
-// 
-//         {NULL, NULL},
-// };
-
 // Python 3 module initialization
 static struct PyModuleDef module_def = {
     PyModuleDef_HEAD_INIT,
@@ -30,7 +20,6 @@ static struct PyModuleDef module_def = {
     NULL,
     NULL
 };
-
 
 PyMODINIT_FUNC
 PyInit_extension(void)
@@ -48,7 +37,7 @@ PyInit_extension(void)
     init_cpu_x86();
     // Interrogate the machine with light slaps.
     detect_host();
-
+    
     // Dictionary that encapsulates our struct
     // Alternatively we could use `struct.unpack()`
     dictCPU = PyDict_New();
@@ -58,7 +47,7 @@ PyInit_extension(void)
     PyDict_SetItem(dictCPU, Py_BuildValue("s", "num_virtual_cores"), Py_BuildValue("i", this_x86->num_virtual_cores));
     PyDict_SetItem(dictCPU, Py_BuildValue("s", "num_physical_cores"), Py_BuildValue("i", this_x86->num_physical_cores));
     PyDict_SetItem(dictCPU, Py_BuildValue("s", "num_threads_per_core"), Py_BuildValue("i", this_x86->num_threads_per_core));
-
+    PyDict_SetItem(dictCPU, Py_BuildValue("s", "num_cpus"), Py_BuildValue("i", this_x86->num_cpus));
     // Cache information
     PyDict_SetItem(dictCPU, Py_BuildValue("s", "cache_line_size"), Py_BuildValue("i", this_x86->cache_line_size));
     PyDict_SetItem(dictCPU, Py_BuildValue("s", "cache_L1_size"),   Py_BuildValue("i", this_x86->cache_L1_size));
