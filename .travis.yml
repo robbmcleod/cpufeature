@@ -1,0 +1,73 @@
+
+
+# TODO: clang builds
+language: python
+sudo: required
+dist: xenial
+arch:
+    - amd64
+python:
+  - 3.7
+
+matrix:
+  exclude:
+      # Exclude the default Python build
+      - python: 3.7
+  include:
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.6
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.7
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.8
+    - os: osx
+      env:
+        - MB_PYTHON_VERSION=3.6
+    - os: osx
+      env:
+        - MB_PYTHON_VERSION=3.7
+    - os: osx
+      env:
+        - MB_PYTHON_VERSION=3.8
+
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-6
+      - gcc-6
+
+before_install:
+  - uname -a
+  - free -m
+  - df -h
+  - ulimit -a
+  # Force use of modern pip and setuptools
+  - pip install --upgrade pip
+  - pip install --upgrade setuptools
+  - pip install -r requirements.txt --verbose
+  - python -V
+  - python -c "import platform; print(platform.python_compiler())"
+
+install:
+  - gcc-6 --version
+  - gcc --version
+  # The TravisCI "Trusty" environments do not have a default $CC set
+  - export CC="gcc-6" CXX="g++-6" 
+  # And pip does not respect $CC
+  - python setup.py install
+  
+script:
+  - mkdir empty
+  - cd empty
+  - python -c "import sys;import cpufeature; print(cpufeature.CPUFeature); sys.exit(0)"
+
+notifications:
+  email: false
+
+
