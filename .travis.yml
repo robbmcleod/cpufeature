@@ -4,10 +4,35 @@
 language: python
 sudo: required
 dist: xenial
+arch:
+    - amd64
 python:
-  - 3.6
   - 3.7
-  - 3.8
+
+matrix:
+exclude:
+      # Exclude the default Python build
+      - python: 3.7
+  include:
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.6
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.7
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.8
+    - os: osx
+      env:
+        - MB_PYTHON_VERSION=3.6
+    - os: osx
+      env:
+        - MB_PYTHON_VERSION=3.7
+    - os: osx
+      env:
+        - MB_PYTHON_VERSION=3.8
+
 
 addons:
   apt:
@@ -40,7 +65,7 @@ install:
 script:
   - mkdir empty
   - cd empty
-  - python -c "import sys;import cpufeature; sys.exit(bool(cpufeature.CPUFeature))"
+  - python -c "import sys;import cpufeature; print(cpufeature.CPUFeature); sys.exit(0)"
 
 notifications:
   email: false

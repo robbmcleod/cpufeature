@@ -60,7 +60,7 @@ test_script:
   # installed library.
   - "mkdir empty_folder"
   - "cd empty_folder"
-  - "python -c \"import sys;import cpufeature; sys.exit(bool(cpufeature.CPUFeature))\""
+  - "python -c \"import sys;import cpufeature; print(cpufeature.CPUFeature); sys.exit(0)\""
   - "cd .."
 
 artifacts:
