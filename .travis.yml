@@ -10,7 +10,7 @@ python:
   - 3.7
 
 matrix:
-exclude:
+  exclude:
       # Exclude the default Python build
       - python: 3.7
   include:
