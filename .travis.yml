@@ -1,38 +1,17 @@
-
-
 # TODO: clang builds
+# Check builds at: https://config.travis-ci.com/explore
 language: python
-sudo: required
 dist: xenial
+os:
+  - linux
+  - osx
 arch:
-    - amd64
+  - amd64
 python:
+  - 3.6
   - 3.7
-
-matrix:
-  exclude:
-      # Exclude the default Python build
-      - python: 3.7
-  include:
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.6
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.7
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.8
-    - os: osx
-      env:
-        - MB_PYTHON_VERSION=3.6
-    - os: osx
-      env:
-        - MB_PYTHON_VERSION=3.7
-    - os: osx
-      env:
-        - MB_PYTHON_VERSION=3.8
-
+  - 3.8
+  - 3.9
 
 addons:
   apt:
@@ -69,5 +48,3 @@ script:
 
 notifications:
   email: false
-
-
