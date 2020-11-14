@@ -44,7 +44,7 @@ install:
 script:
   - mkdir empty
   - cd empty
-  - python -c "import sys;import cpufeature; print(cpufeature.CPUFeature); sys.exit(0)"
+  - python -c "import sys;import cpufeature; cpufeature.print_features(); sys.exit(0)"
 
 notifications:
   email: false

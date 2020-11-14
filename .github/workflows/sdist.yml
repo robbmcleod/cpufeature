@@ -1,0 +1,37 @@
+name: make source distribution
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      # https://github.com/actions/setup-python
+      # https://github.com/actions/python-versions
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: make sdist
+      run: |
+        git submodule update --init --recursive
+        python setup.py sdist
+    - name: upload sdist
+      uses: actions/upload-artifact@v1
+      with:
+        name: dist
+        path: dist
+    # - name: Publish to PyPI
+    #   on: [release]
+    #   env:
+    #     PYPI_USERNAME: ${{ secrets.PYPI_USER }}
+    #     PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+    #   run: |
+    #     pip install twine
+    #     python -m twine upload -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} --repository-url https://upload.pypi.org/legacy/ dist/*
