@@ -1,9 +1,6 @@
-name: make source distribution
+name: Archive source distribution
 
-on:
-  push:
-    tags:
-      - v*
+on: [push]
 
 jobs:
   build:

@@ -1,8 +1,6 @@
 name: Build Wheels for manylinux
-on:
-  push:
-    tags:
-      - v*
+
+on: [push]
 
 jobs:
   build:
