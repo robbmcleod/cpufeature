@@ -10,7 +10,18 @@
 #include "cpu_x86.h"
 #include <pthread.h>
 #include <unistd.h>
+
+#ifdef __linux__
 #include <sys/sysinfo.h>
+#endif
+
+#if defined(__DragonFly__) || \
+    defined(__OpenBSD__)   || \
+    defined(__FreeBSD__)   || \
+    defined(__NetBSD__)    || \
+    defined(__APPLE__)
+#include <sys/sysctl.h>
+#endif
 
 void cpuid(int32_t out[4], int32_t eax, int32_t ecx) {
     // For GCC-specific cpuid
