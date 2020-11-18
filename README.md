@@ -89,6 +89,7 @@ Release Notes
 **0.2.0**
 
 * Added support for AMD processors.
+* Added a script for `valgrind` to more easier locate problems when the module crashes.
 
 **0.1.1**
 
