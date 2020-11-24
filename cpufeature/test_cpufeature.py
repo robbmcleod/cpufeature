@@ -26,4 +26,5 @@ def test(verbosity=2):
     return unittest.TextTestRunner(verbosity=verbosity).run(theSuite)
 
 
-
+if __name__ == '__main__':
+    test()
