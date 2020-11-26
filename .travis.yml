@@ -7,9 +7,10 @@
 
 language: python
 python:
-  - 3.6
+  # - 3.6
   - 3.7
-  - 3.8
+  # - 3.8
+  # - 3.9
 
 before_install:
   - |
@@ -61,22 +62,22 @@ jobs:
       #   python3 -m pip install twine
       #   python3 -m twine upload --skip-existing wheelhouse/*.whl
     # Deploy on mac
-    - stage: deploy
-      name: Build and deploy macOS wheels
-      os: osx
-      language: shell
-      install: python3 -m pip install cibuildwheel==1.6.4
-      script: python3 -m cibuildwheel --output-dir wheelhouse
+    # - stage: deploy
+    #   name: Build and deploy macOS wheels
+    #   os: osx
+    #   language: shell
+    #   install: python3 -m pip install cibuildwheel==1.6.4
+    #   script: python3 -m cibuildwheel --output-dir wheelhouse
       # after_success: |
       #   python3 -m pip install twine
       #   python3 -m twine upload --skip-existing wheelhouse/*.whl
     # Deploy on windows
-    - stage: deploy
-      name: Build and deploy Windows wheels
-      os: windows
-      language: shell
-      install: python3 -m pip install cibuildwheel==1.6.4
-      script: python3 -m cibuildwheel --output-dir wheelhouse
+    # - stage: deploy
+    #   name: Build and deploy Windows wheels
+    #   os: windows
+    #   language: shell
+    #   install: python3 -m pip install cibuildwheel==1.6.4
+    #   script: python3 -m cibuildwheel --output-dir wheelhouse
       # after_success: |
       #   python3 -m pip install twine
       #   python3 -m twine upload --skip-existing wheelhouse/*.whl
@@ -84,6 +85,6 @@ jobs:
 env:
   global:
     - CIBW_TEST_REQUIRES=pytest
-    - CIBW_TEST_COMMAND="pytest {project}\test_cpufeature.py"
+    - CIBW_TEST_COMMAND="pwd; pytest {project}\test_cpufeature.py"
     - TWINE_USERNAME=__token__
     # Note: TWINE_PASSWORD is set to a PyPI API token in Travis settings
