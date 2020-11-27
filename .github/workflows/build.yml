@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   CIBW_BUILD_VERBOSITY: 1
   CIBW_TEST_REQUIRES: pytest
-  CIBW_TEST_COMMAND: pytest {package}/test_cpufeature.py
+  CIBW_TEST_COMMAND: pytest {package}/cpufeature/test_cpufeature.py
 
 jobs:
   build_wheels:
