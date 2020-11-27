@@ -20,11 +20,25 @@ jobs:
 
       - name: Install cibuildwheel
         run: |
-          python3 -m pip install cibuildwheel==1.6.4
+          python -m pip install cibuildwheel==1.6.4
 
-      - name: Build wheels
+      - name: Build wheels for CPython 3.6
         run: |
-          python3 -m cibuildwheel --output-dir wheelhouse
+          python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: "cp36-*"
+
+      - name: Build wheels for CPython 3.7
+        run: |
+          python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: "cp37-*"
+
+      - name: Build wheels for CPython 3.8
+        run: |
+          python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: "cp38-*"
 
       - uses: actions/upload-artifact@v2
         with:
