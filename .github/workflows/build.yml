@@ -5,7 +5,8 @@ on: [push, pull_request]
 env:
   CIBW_BUILD_VERBOSITY: 1
   CIBW_TEST_REQUIRES: pytest
-  CIBW_TEST_COMMAND: pwd && ls -altr && pytest {project}/cpufeature/test_cpufeature.py
+  CIBW_TEST_COMMAND: ls -altr {project} && ls -altr {package} && python -c "import os; import cpufeature; d = os.path.dirname(cpufeature.__file__); print(d); print(os.listdir(d))"
+  # CIBW_TEST_COMMAND: pytest {project}/cpufeature/test_cpufeature.py
 
 jobs:
   build_wheels:

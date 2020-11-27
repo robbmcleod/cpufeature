@@ -17,7 +17,7 @@ def test(verbosity=2):
     Run ``unittest`` suite for ``cpuinfo`` package.
     '''
     
-    print( "`cpufeature` tests for version: {}".format(cpufeature.__version__))
+    print("`cpufeature` tests for version: {}".format(cpufeature.__version__))
     
     theSuite = unittest.TestSuite()
 
