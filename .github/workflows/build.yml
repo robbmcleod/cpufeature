@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   CIBW_BUILD_VERBOSITY: 1
   CIBW_TEST_REQUIRES: pytest
-  CIBW_TEST_COMMAND: pytest {package}/cpufeature/test_cpufeature.py
+  CIBW_TEST_COMMAND: pwd && ls -altr && pytest {project}/cpufeature/test_cpufeature.py
 
 jobs:
   build_wheels:
@@ -32,7 +32,6 @@ jobs:
           python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: "cp36-*"
-          CIBW_PRE_TEST:
 
       - name: Build wheels for CPython 3.7
         run: |
