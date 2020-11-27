@@ -2,6 +2,11 @@ name: Build
 
 on: [push, pull_request]
 
+env:
+  CIBW_BUILD_VERBOSITY: 1
+  CIBW_TEST_REQUIRES: pytest
+  CIBW_TEST_COMMAND: pytest {package}/test_cpufeature.py
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -27,6 +32,7 @@ jobs:
           python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: "cp36-*"
+          CIBW_PRE_TEST:
 
       - name: Build wheels for CPython 3.7
         run: |
@@ -39,6 +45,12 @@ jobs:
           python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: "cp38-*"
+
+      - name: Build wheels for CPython 3.9
+        run: |
+          python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: "cp39-*"
 
       - uses: actions/upload-artifact@v2
         with:
