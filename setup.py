@@ -21,9 +21,9 @@ from glob import glob
 # cpufeature version
 major_ver = 0
 minor_ver = 2
-nano_ver = 0
+nano_ver = 1
 
-branch = ''
+branch = 'dev0'
 
 VERSION = "%d.%d.%d%s" % (major_ver, minor_ver, nano_ver, branch)
 

@@ -1,19 +1,16 @@
-cpufeature
+CPUFeature
 ==========
 
-Prototype of replacement for `cpuinfo.py` for high-performance Python modules. Detects CPU features such as:
+CPUFeature is a tool for detecting CPU features on x86/AMD64 processors. In particular it is engineered to have very low overhead on import (~ 1 ms) and to detect features that are often important in high-performance computing where hybrid combinations of multi-threading and multi-processing are used. Detects CPU features such as:
 
 * SIMD instruction support
 * Number of cores (both virtual and physical)
+* Number of CPUs on the motherboard.
 * Cache sizes
 
-It is fast, with an import+execution time of ~1 ms
+It is written in C99. It supports Windows with MSVC and Linux with GCC/LLVM compilers. MacOSX should also work with GCC/LLVM. CPUFeature is licensed under Creative Commons Zero, so it may be freely incorporated as a submodule into your own projects.
 
-It is written in C99. It supports Windows with MSVC and Linux with GCC/LLVM compilers. MacOSX should also work with GCC/LLVM but has not been tested.
-
-It is licensed under Creative Commons Zero, so it may be freely incorporated as a submodule into your own projects.
-
-It needs to be tested on a variety of machines.
+CPUFeature is considered to be in an alpha state because while it is tested via GitHub Actions on a variety of platforms, we expect edge cases to appear.
 
 Example
 -------
@@ -86,16 +83,21 @@ Authors
 Release Notes
 -------------
 
-**0.2.0**
+### 0.2.1 ###
 
+* **Under development.**
+
+### 0.2.0 ###
+
+* Added pre-build wheels via `cibuildwheels` and GitHub Actions for Python 3.6-3.9 on Linux/Windows/MacOSX.
 * Added support for AMD processors.
 * Added a script for `valgrind` to more easier locate problems when the module crashes.
 
-**0.1.1**
+### 0.1.1 ###
 
 * Fixes for compilation with `clang`.
 
-**0.1.0**
+### 0.1.0 ###
 
 * Added detection of processors, cores, and cache sizes
 * Created Python wrapper around FeatureDetector
