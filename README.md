@@ -85,7 +85,7 @@ Release Notes
 
 ### 0.2.1 ###
 
-* **Under development.**
+* Supported Python versions are now 3.8 - 3.11.
 
 ### 0.2.0 ###
 

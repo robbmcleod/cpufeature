@@ -31,6 +31,14 @@ Tagging
     `git push`
     `git push --tags`
 
+* If you happen to have to delete the tag, such as artifacts demonstrates a fault, first delete it locally,
+
+    `git tag --delete vX.Y.Z`
+
+  and then remotely on Github,
+
+    `git push --delete origin vX.Y.Z`
+
 Build Wheels
 ------------
 

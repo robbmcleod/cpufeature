@@ -6,7 +6,8 @@
 #       Author:  Robert A. McLeod - robbmcleod@gmail.com
 #       Created: 2017 December 30
 #
-#       A Python fork of FeatureDetector by Alexander J. Yee (https://github.com/Mysticial/FeatureDetector)
+#       A Python fork of FeatureDetector by Alexander J. Yee 
+#       (https://github.com/Mysticial/FeatureDetector)
 #
 ########################################################################
 
@@ -23,7 +24,7 @@ major_ver = 0
 minor_ver = 2
 nano_ver = 1
 
-branch = 'dev0'
+branch = ''
 
 VERSION = "%d.%d.%d%s" % (major_ver, minor_ver, nano_ver, branch)
 
@@ -55,9 +56,10 @@ Intended Audience :: Developers
 Intended Audience :: Information Technology
 License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
 Programming Language :: Python
-Programming Language :: Python :: 3.4
-Programming Language :: Python :: 3.5
-Programming Language :: Python :: 3.6
+Programming Language :: Python :: 3.8
+Programming Language :: Python :: 3.9
+Programming Language :: Python :: 3.10
+Programming Language :: Python :: 3.11
 Topic :: Software Development :: Libraries :: Python Modules
 Topic :: System :: Hardware
 Operating System :: Microsoft :: Windows
