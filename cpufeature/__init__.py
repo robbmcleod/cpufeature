@@ -3,7 +3,6 @@ Module ``cpufeature``
 
 @author:  Robert A. McLeod
 @email: robbmcleod@gmail.com
-
 '''
 
 from cpufeature.version import __version__

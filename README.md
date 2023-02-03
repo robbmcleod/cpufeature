@@ -17,6 +17,7 @@ Example
 
 The module generates a `dict` called `CPUFeature` on import which contains useful information regarding optimization and compilation for the host. For my Intel i7-7820X Skylake CPU, it generates the following info:
 
+```
     > python -c "import cpufeature; cpufeature.print_features()"
   === CPU FEATURES ===
       VendorId                : GenuineIntel
@@ -63,6 +64,9 @@ The module generates a `dict` called `CPUFeature` on import which contains usefu
       AVX512dq                : True
       AVX512ifma              : False
       AVX512vbmi              : False
+      AVX512vbmi2             : False
+      AVX512vnni              : False
+```
 
 Notes on Fields
 ---------------
@@ -86,6 +90,7 @@ Release Notes
 ### 0.2.1 ###
 
 * Supported Python versions are now 3.8 - 3.11.
+* Added tests for AVX512vbmi2 and AVX512vnni.
 
 ### 0.2.0 ###
 

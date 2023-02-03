@@ -224,8 +224,9 @@ void detect_host(void) {
     get_vendor_string();
     detect_cores();
     detect_cache();
-
-    int info[4];
+    
+    // See: https://en.wikipedia.org/wiki/CPUID
+    int info[4]; // [EAX, EBX, ECX, EDX]
     cpuid(info, 0, 0);
     int nIds = info[0];
 
@@ -261,15 +262,19 @@ void detect_host(void) {
         this_x86->HW_SHA          = (info[1] & ((int)1 << 29)) != 0;
         this_x86->HW_PREFETCHWT1  = (info[2] & ((int)1 <<  0)) != 0;
 
-        this_x86->HW_AVX512_F     = (info[1] & ((int)1 << 16)) != 0;
+        
+        this_x86->HW_AVX512_F     = (info[1] & ((int)1 << 16)) != 0;  // Foundations
         this_x86->HW_AVX512_CD    = (info[1] & ((int)1 << 28)) != 0;
-        this_x86->HW_AVX512_PF    = (info[1] & ((int)1 << 26)) != 0;
+        this_x86->HW_AVX512_PF    = (info[1] & ((int)1 << 26)) != 0;  // Prefetch Instructions
         this_x86->HW_AVX512_ER    = (info[1] & ((int)1 << 27)) != 0;
         this_x86->HW_AVX512_VL    = (info[1] & ((int)1 << 31)) != 0;
         this_x86->HW_AVX512_BW    = (info[1] & ((int)1 << 30)) != 0;
         this_x86->HW_AVX512_DQ    = (info[1] & ((int)1 << 17)) != 0;
         this_x86->HW_AVX512_IFMA  = (info[1] & ((int)1 << 21)) != 0;
-        this_x86->HW_AVX512_VBMI  = (info[2] & ((int)1 <<  1)) != 0;
+        this_x86->HW_AVX512_VBMI  = (info[2] & ((int)1 <<  1)) != 0;  // Vector Bit Manupulation Instructions 2
+        this_x86->HW_AVX512_VBMI2 = (info[2] & ((int)1 <<  6)) != 0;  // Vector Bit Manupulation Instructions 2
+        this_x86->HW_AVX512_VNNI  = (info[2] & ((int)1 <<  11)) != 0; // Vector Neural Network Instructions
+        
     }
     if (nExIds >= 0x80000001) {
         cpuid(info, 0x80000001, 0);

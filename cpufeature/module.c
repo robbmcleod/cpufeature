@@ -100,6 +100,8 @@ PyInit_extension(void)
     PyDict_SetItem(dictCPU, Py_BuildValue("s", "AVX512dq"), Py_BuildValue("O", this_x86->HW_AVX512_DQ ? Py_True: Py_False));
     PyDict_SetItem(dictCPU, Py_BuildValue("s", "AVX512ifma"), Py_BuildValue("O", this_x86->HW_AVX512_IFMA ? Py_True: Py_False));
     PyDict_SetItem(dictCPU, Py_BuildValue("s", "AVX512vbmi"), Py_BuildValue("O", this_x86->HW_AVX512_VBMI ? Py_True: Py_False));
+    PyDict_SetItem(dictCPU, Py_BuildValue("s", "AVX512vbmi2"), Py_BuildValue("O", this_x86->HW_AVX512_VBMI2 ? Py_True: Py_False));
+    PyDict_SetItem(dictCPU, Py_BuildValue("s", "AVX512vnni"), Py_BuildValue("O", this_x86->HW_AVX512_VNNI ? Py_True: Py_False));
     PyModule_AddObject(m, "CPUFeature", dictCPU);
 
     // Integer macros

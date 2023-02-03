@@ -82,6 +82,8 @@ struct cpu_x86{
     bool HW_AVX512_DQ;
     bool HW_AVX512_IFMA;
     bool HW_AVX512_VBMI;
+    bool HW_AVX512_VBMI2;
+    bool HW_AVX512_VNNI;
 };
 
 // Global 
