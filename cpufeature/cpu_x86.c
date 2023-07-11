@@ -116,7 +116,11 @@ void detect_cores(void) {
 
         procPerCore = info1[1] & 0xFFFF;
         logicalProc = info2[1] & 0xFFFF;
-        physicalProc = logicalProc / procPerCore;
+        if (procPerCore <= 0) {
+            physicalProc = 0;
+        } else {
+            physicalProc = logicalProc / procPerCore;
+        }
     }
     else if (this_x86->vendor_enum == AMD) {
         cpuid(info1, 0x80000000, 0);
