@@ -12,6 +12,11 @@ It is written in C99. It supports Windows with MSVC and Linux with GCC/LLVM comp
 
 CPUFeature is considered to be in an alpha state because while it is tested via GitHub Actions on a variety of platforms, we expect edge cases to appear.
 
+Warning
+-------
+
+As CPUFeature uses the `cpuid` instruction, its behavior in the case of virtualization or containerization is undefined. Whether or not it returns fully or partially correct information will depend on the implementation of the `cpuid` function by the virtual machine. Test before trusting the results.
+
 Example
 -------
 
