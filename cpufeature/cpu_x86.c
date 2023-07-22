@@ -114,9 +114,10 @@ void detect_cores(void) {
         // printf( "x0B,0x00: Processors: %d, %d, %d, %d\n", info0[0], info0[1], info0[2], info0[3]);
         // printf( "x0B,0x01: Cores:      %d, %d, %d, %d\n", info1[0], info1[1], info1[2], info1[3]);
 
+        // WARNING: On some virtual environments, these values are returning nonsense or zeros.
         procPerCore = info1[1] & 0xFFFF;
         logicalProc = info2[1] & 0xFFFF;
-        if (procPerCore <= 0) {
+        if (procPerCore <= 0) { // div/0 guard
             physicalProc = 0;
         } else {
             physicalProc = logicalProc / procPerCore;
@@ -152,10 +153,20 @@ void detect_cores(void) {
     }
 
     totalSystemProc = hardware_concurrency();
-    this_x86->num_cpus = totalSystemProc  / logicalProc;
+    if (logicalProc > 0) { // div/0 guard
+        this_x86->num_cpus = totalSystemProc / logicalProc;
+    } else {
+        this_x86->num_cpus = totalSystemProc;
+    }
+    
     if (totalSystemProc > logicalProc) {
         // Multiple CPU chips.
-        physicalProc = totalSystemProc * physicalProc / logicalProc;
+        if (logicalProc > 0) { // div/0 guard
+            physicalProc = totalSystemProc * physicalProc / logicalProc;
+        } else {
+            physicalProc = totalSystemProc * physicalProc;
+        }
+        
         logicalProc = totalSystemProc;
     }
     this_x86->num_threads_per_core = procPerCore;
