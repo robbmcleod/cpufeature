@@ -14,6 +14,7 @@
 # flake8: noqa
 
 import os
+import sys
 
 from setuptools import Extension
 from setuptools import setup
@@ -43,6 +44,12 @@ inc_dirs = ['cpufeature',]
 lib_dirs = []
 libs = []
 def_macros = []
+options = dict()
+
+limited_api = sys.version_info >= (3, 10)
+if limited_api:
+    options.setdefault('bdist_wheel', dict())['py_limited_api'] = 'cp310'
+    def_macros.append(('Py_LIMITED_API', '0x030A0000'))
 
 with open('README.md') as fh:
     long_desc = fh.read()
@@ -56,10 +63,7 @@ Intended Audience :: Developers
 Intended Audience :: Information Technology
 License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
 Programming Language :: Python
-Programming Language :: Python :: 3.8
-Programming Language :: Python :: 3.9
-Programming Language :: Python :: 3.10
-Programming Language :: Python :: 3.11
+Programming Language :: Python :: 3
 Topic :: Software Development :: Libraries :: Python Modules
 Topic :: System :: Hardware
 Operating System :: Microsoft :: Windows
@@ -87,8 +91,11 @@ setup(name = "cpufeature",
                    library_dirs=lib_dirs,
                    libraries=libs,
                    extra_link_args=LFLAGS,
-                   extra_compile_args=CFLAGS ),
+                   extra_compile_args=CFLAGS,
+                   py_limited_api=limited_api,
+                  ),
         ],
+      options=options,
       # tests_require=tests_require,
       packages = ['cpufeature'],
 
