@@ -38,17 +38,12 @@ jobs:
         env:
           CIBW_BUILD: "cp39-*"
 
-      - name: Build wheels for CPython 3.10
+      - name: Build wheels for CPython 3.10 and above
         run: |
           python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: "cp310-*"
-
-      - name: Build wheels for CPython 3.11
-        run: |
-          python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_BUILD: "cp311-*"
+          CIBW_ENVIRONMENT: PY_LIMITED_API=1
 
       - uses: actions/upload-artifact@v2
         with:
